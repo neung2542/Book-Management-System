@@ -15,8 +15,6 @@ def on_startup():
 
 
 @app.get("/")
-def root():
-    return {"message": "Books CRUD API with SQLModel"}
 
 @app.post("/books/", response_model=BookResponse)
 def create_book(book: BookCreate, session: SessionDep):
