@@ -9,26 +9,39 @@ const form = reactive({
   genre: ''
 })
 
+const toast = useToast()
+
+
 const submit = async () => {
   loading.value = true
-  await fetch('http://localhost:8000/books/', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      title: form.title,
-      author: form.author,
-      published_year: form.published_year ? Number(form.published_year) : undefined,
-      genre: form.genre
+  try {
+    const res = await fetch('http://localhost:8000/books/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        title: form.title,
+        author: form.author,
+        published_year: form.published_year ? Number(form.published_year) : undefined,
+        genre: form.genre
+      })
     })
-  })
-  loading.value = false
-  showModal.value = false
-  emit('created')
-  // Reset form
-  form.title = ''
-  form.author = ''
-  form.published_year = ''
-  form.genre = ''
+    if (!res.ok) {
+      const errorData = await res.json()
+      throw new Error(errorData.detail || 'Failed to create book')
+    }
+    loading.value = false
+    showModal.value = false
+    emit('created')
+    toast.add({ title: 'Book created successfully', color: 'success' })
+    // Reset form
+    form.title = ''
+    form.author = ''
+    form.published_year = ''
+    form.genre = ''
+  } catch (error: any) {
+    loading.value = false
+    toast.add({ title: error.message || 'Error creating book', color: 'error' })
+  }
 }
 </script>
 <template>
