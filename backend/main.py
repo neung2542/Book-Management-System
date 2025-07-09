@@ -2,12 +2,23 @@ from typing import Annotated
 
 from fastapi import Depends, FastAPI, HTTPException, Query
 from sqlmodel import Field, Session, SQLModel, create_engine, select
+from fastapi.middleware.cors import CORSMiddleware
 
 from .database import create_db_and_tables, get_session
 from .models import Book, BookCreate, BookUpdate, BookResponse
 
 SessionDep = Annotated[Session, Depends(get_session)]
 app = FastAPI()
+
+origins = ["*"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.on_event("startup")
 def on_startup():
