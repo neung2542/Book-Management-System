@@ -5,7 +5,7 @@ book management system - FastAPI, nuxt, mySQL
 
 ## API Endpoints
 
-- `GET    /books/`           — List books (supports `offset` and `limit`)
+- `GET    /books/`           — List books
 - `POST   /books/`           — Create a new book
 - `GET    /books/{id}`       — Get a book by ID
 - `PATCH  /books/{id}`       — Update a book
