@@ -1,14 +1,24 @@
 <script setup lang="ts">
 import { h, resolveComponent } from 'vue'
 import type { TableColumn } from '@nuxt/ui'
+import type { Row } from '@tanstack/vue-table'
 
 import CreateBookButton from '~/components/CreateBookButton.vue'
+import EditBookModal from '~/components/EditBookModal.vue'
+import DeleteBookModal from '~/components/DeleteBookModal.vue'
 
 const page = ref(1)
 const pageSize = ref(5)
 const total = ref(0)
 const books = ref([])
 const loading = ref(false)
+
+const UButton = resolveComponent('UButton')
+const UDropdownMenu = resolveComponent('UDropdownMenu')
+
+const showEdit = ref(false)
+const showDelete = ref(false)
+const selectedBook = ref<Book | null>(null)
 
 type Book = {
   id: number
@@ -91,7 +101,56 @@ const columns: TableColumn<Book>[] = [
       })
     }
   },
+  {
+    id: 'actions',
+    cell: ({ row }) => {
+      return h(
+        'div',
+        { class: 'text-right' },
+        h(
+          UDropdownMenu,
+          {
+            content: {
+              align: 'end'
+            },
+            items: getRowItems(row),
+            'aria-label': 'Actions dropdown'
+          },
+          () =>
+            h(UButton, {
+              icon: 'i-lucide-ellipsis-vertical',
+              color: 'neutral',
+              variant: 'ghost',
+              class: 'ml-auto',
+              'aria-label': 'Actions dropdown'
+            })
+        )
+      )
+    }
+  }
 ]
+
+function getRowItems(row: Row<Book>) {
+  return [
+    {
+      label: 'Edit',
+      icon: 'i-lucide-edit',
+      onSelect: () => {
+        selectedBook.value = row.original
+        showEdit.value = true
+      }
+    },
+    {
+      label: 'Delete',
+      icon: 'i-lucide-trash',
+      color: 'error',
+      onSelect: () => {
+        selectedBook.value = row.original
+        showDelete.value = true
+      }
+    }
+  ]
+}
 
 </script>
 
@@ -105,5 +164,9 @@ const columns: TableColumn<Book>[] = [
       <UTable :loading="loading" :data="books" :columns="columns" class="flex-1" style="min-width: 900px;" />
     </div>
     <UPagination v-model="page" :page-count="pageSize" :total="total" class="mt-4" />
+  </div>
+  <div>
+    <EditBookModal v-model:show="showEdit" :book="selectedBook" @updated="fetchBooks" />
+    <DeleteBookModal v-model:show="showDelete" :book="selectedBook" @deleted="fetchBooks" />
   </div>
 </template>
