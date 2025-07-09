@@ -96,11 +96,14 @@ const columns: TableColumn<Book>[] = [
 </script>
 
 <template>
-  <div>
-    <CreateBookButton @created="fetchBooks" class="mb-4" />
-  </div>
-  <div style="overflow-x: auto;">
-    <UTable :loading="loading" :data="books" :columns="columns" class="flex-1" style="min-width: 900px;" />
+  <div class="flex flex-col gap-4 p-4">
+    <h1 class="text-2xl font-bold">Book Management System</h1>
+    <div>
+      <CreateBookButton @created="fetchBooks" class="mb-4" />
+    </div>
+    <div style="overflow-x: auto;">
+      <UTable :loading="loading" :data="books" :columns="columns" class="flex-1" style="min-width: 900px;" />
+    </div>
     <UPagination v-model="page" :page-count="pageSize" :total="total" class="mt-4" />
   </div>
 </template>
