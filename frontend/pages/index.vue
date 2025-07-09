@@ -39,17 +39,60 @@ const columns: TableColumn<Book>[] = [
     cell: ({ row }) => `#${row.getValue('id')}`
 
   },
+   {
+    accessorKey: 'title',
+    header: 'Title',
+  },
+   {
+    accessorKey: 'author',
+    header: 'Author',
+  },
+   {
+    accessorKey: 'published_year',
+    header: 'Published Year',
+  },
+   {
+    accessorKey: 'genre',
+    header: 'Genre',
+  },
+   {
+    accessorKey: 'created_at',
+    header: 'Created at',
+    cell: ({ row }) => {
+      return new Date(row.getValue('created_at')).toLocaleString('en-US', {
+        day: 'numeric',
+        month: 'short',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false
+      })
+    }
+  },
+   {
+    accessorKey: 'updated_at',
+    header: 'Updated at',
+    cell: ({ row }) => {
+      return new Date(row.getValue('updated_at')).toLocaleString('en-US', {
+        day: 'numeric',
+        month: 'short',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false
+      })
+    }
+  },
 ]
 
 </script>
 
 <template>
-  <div>
+  <div style="overflow-x: auto;">
     <UTable
       :loading="loading"
       :data="books"
       :columns="columns"
       class="flex-1"
+      style="min-width: 900px;"
     />
     <UPagination
       v-model="page"
