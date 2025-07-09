@@ -2,13 +2,14 @@
 import { h, resolveComponent } from 'vue'
 import type { TableColumn } from '@nuxt/ui'
 import type { Row } from '@tanstack/vue-table'
+import { getPaginationRowModel } from '@tanstack/vue-table'
 
 import CreateBookButton from '~/components/CreateBookButton.vue'
 import EditBookModal from '~/components/EditBookModal.vue'
 import DeleteBookModal from '~/components/DeleteBookModal.vue'
 
 const page = ref(1)
-const pageSize = ref(5)
+const pageSize = ref(10)
 const total = ref(0)
 const books = ref([])
 const loading = ref(false)
@@ -36,8 +37,6 @@ const fetchBooks = async () => {
   const res = await fetch(`http://localhost:8000/books/?offset=${offset}&limit=${pageSize.value}`)
   const data = await res.json()
   books.value = data
-  // Optionally, get total count from a separate endpoint or response header
-  // For now, just increment if data.length === pageSize
   total.value = (data.length === pageSize.value) ? page.value * pageSize.value + 1 : (page.value - 1) * pageSize.value + data.length
   loading.value = false
 }
@@ -163,7 +162,12 @@ function getRowItems(row: Row<Book>) {
     <div style="overflow-x: auto;">
       <UTable :loading="loading" :data="books" :columns="columns" class="flex-1" style="min-width: 900px;" />
     </div>
-    <UPagination v-model="page" :page-count="pageSize" :total="total" class="mt-4" />
+    <UPagination
+      v-model:page="page"
+      :page-count="pageSize"
+      :total="total"
+      class="mt-4"
+    />
   </div>
   <div>
     <EditBookModal v-model:show="showEdit" :book="selectedBook" @updated="fetchBooks" />
