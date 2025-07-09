@@ -2,6 +2,8 @@
 import { h, resolveComponent } from 'vue'
 import type { TableColumn } from '@nuxt/ui'
 
+import CreateBookButton from '~/components/CreateBookButton.vue'
+
 const page = ref(1)
 const pageSize = ref(5)
 const total = ref(0)
@@ -33,29 +35,37 @@ const fetchBooks = async () => {
 watch([page, pageSize], fetchBooks, { immediate: true })
 
 const columns: TableColumn<Book>[] = [
-   {
+  {
     accessorKey: 'id',
     header: "ID",
     cell: ({ row }) => `#${row.getValue('id')}`
 
   },
-   {
+  {
     accessorKey: 'title',
     header: 'Title',
   },
-   {
+  {
     accessorKey: 'author',
     header: 'Author',
   },
-   {
+  {
     accessorKey: 'published_year',
     header: 'Published Year',
+    cell: ({ row }) => {
+      const val = row.getValue('published_year')
+      return val ? val : '-'
+    }
   },
-   {
+  {
     accessorKey: 'genre',
     header: 'Genre',
+    cell: ({ row }) => {
+      const val = row.getValue('genre')
+      return val ? val : '-'
+    }
   },
-   {
+  {
     accessorKey: 'created_at',
     header: 'Created at',
     cell: ({ row }) => {
@@ -68,7 +78,7 @@ const columns: TableColumn<Book>[] = [
       })
     }
   },
-   {
+  {
     accessorKey: 'updated_at',
     header: 'Updated at',
     cell: ({ row }) => {
@@ -86,19 +96,11 @@ const columns: TableColumn<Book>[] = [
 </script>
 
 <template>
+  <div>
+    <CreateBookButton @created="fetchBooks" class="mb-4" />
+  </div>
   <div style="overflow-x: auto;">
-    <UTable
-      :loading="loading"
-      :data="books"
-      :columns="columns"
-      class="flex-1"
-      style="min-width: 900px;"
-    />
-    <UPagination
-      v-model="page"
-      :page-count="pageSize"
-      :total="total"
-      class="mt-4"
-    />
+    <UTable :loading="loading" :data="books" :columns="columns" class="flex-1" style="min-width: 900px;" />
+    <UPagination v-model="page" :page-count="pageSize" :total="total" class="mt-4" />
   </div>
 </template>

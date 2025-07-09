@@ -4,7 +4,7 @@ from datetime import datetime
 class BookBase(SQLModel):
     title: str = Field(min_length=1, max_length=255)
     author: str = Field(min_length=1, max_length=255)
-    published_year: int | None = Field(default=None, ge=1000, le=2024)
+    published_year: int | None = Field(default=None, le=2025)
     genre: str | None = Field(default=None, max_length=100)
 
 class Book(BookBase, table=True):
