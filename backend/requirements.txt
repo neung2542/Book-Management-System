@@ -1,3 +1,5 @@
 fastapi[standard]
 pydantic==2.8.0
 sqlmodel
+passlib[bcrypt]
+pyjwt

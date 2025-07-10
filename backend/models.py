@@ -27,3 +27,29 @@ class BookResponse(BookBase):
     id: int
     created_at: datetime
     updated_at: datetime
+
+class UserBase(SQLModel):
+    username: str = Field(min_length=3, max_length=50, unique=True)
+
+class User(UserBase, table=True):
+    __tablename__ = "users"
+    
+    id: int | None = Field(default=None, primary_key=True)
+    hashed_password: str
+    is_active: bool = Field(default=True)
+    created_at: datetime | None = Field(default_factory=datetime.now)
+
+class UserCreate(UserBase):
+    password: str = Field(min_length=6)
+
+class UserResponse(UserBase):
+    id: int
+    is_active: bool
+    created_at: datetime
+
+class Token(SQLModel):
+    access_token: str
+    token_type: str
+
+class TokenData(SQLModel):
+    username: str | None = None
